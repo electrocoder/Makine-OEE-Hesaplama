@@ -1,123 +1,303 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Makine OEE Hesaplama</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: sans-serif;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
             display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
+
+        /* Navbar Stilleri */
+        .navbar {
+            background-color: #007bff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .navbar .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar .nav-links li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: opacity 0.3s ease;
+        }
+
+        .navbar .nav-links li a:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Content Stilleri */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
         .container {
-            width: 400px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 450px;
             margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
         }
+
         .explanation {
-            width: 300px;
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #eee;
-            border-radius: 5px;
             background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 400px;
+            margin: 20px;
         }
+
+        h2, h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
         label {
             display: block;
-            margin-bottom: 5px;
-            color: #333; /* Genel etiket rengi */
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
         }
+
         input[type="number"] {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
-            border-radius: 3px;
-            box-sizing: border-box;
-            background-color: #e0f7fa; /* Giriş alanı rengi (açık mavi) */
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #e0f7fa;
+            transition: border-color 0.3s ease;
         }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+
         button {
-            padding: 10px 15px;
+            width: 100%;
+            padding: 12px;
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 3px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
         #sonuc {
             margin-top: 20px;
-            font-weight: bold;
-            color: #4caf50; /* Hesaplanan sonuç rengi (yeşil) */
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            color: #2e7d32;
+            font-weight: 500;
+            line-height: 1.6;
         }
-        h3 {
-            margin-top: 0;
+
+        .explanation p {
+            margin-bottom: 12px;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .explanation strong {
+            color: #333;
+        }
+
+        .explanation p.green {
+            color: #2e7d32;
+        }
+
+        /* Footer Stilleri */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #4caf50;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #66bb6a;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .container, .explanation {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .navbar .nav-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .navbar .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Makine OEE Hesaplama</h2>
-        <label for="planlananSure">Planlanan Üretim Süresi (dakika):</label>
-        <input type="number" id="planlananSure" required>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">OEE Hesaplama</a>
+            <ul class="nav-links">
+                <li><a href="#">Ana Sayfa</a></li>
+                <li><a href="#">Hesaplama</a></li>
+                <li><a href="#">Hakkında</a></li>
+                <li><a href="#">İletişim</a></li>
+            </ul>
+        </div>
+    </nav>
 
-        <label for="durusSuresi">Duruş Süresi (dakika):</label>
-        <input type="number" id="durusSuresi" required>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h2>Makine OEE Hesaplama</h2>
+            <form id="oeeForm" onsubmit="hesaplaOEE(); return false;">
+                <label for="planlananSure">Planlanan Üretim Süresi (dakika):</label>
+                <input type="number" id="planlananSure" min="0" required>
 
-        <label for="toplamUretim">Toplam Üretilen Miktar:</label>
-        <input type="number" id="toplamUretim" required>
+                <label for="durusSuresi">Duruş Süresi (dakika):</label>
+                <input type="number" id="durusSuresi" min="0" required>
 
-        <label for="idealCevrim">İdeal Çevrim Süresi (dakika/ürün):</label>
-        <input type="number" id="idealCevrim" step="0.01" required>
+                <label for="toplamUretim">Toplam Üretilen Miktar:</label>
+                <input type="number" id="toplamUretim" min="0" required>
 
-        <label for="kaliteliUrun">Kaliteli Ürün Miktarı:</label>
-        <input type="number" id="kaliteliUrun" required>
+                <label for="idealCevrim">İdeal Çevrim Süresi (dakika/ürün):</label>
+                <input type="number" id="idealCevrim" min="0" step="0.01" required>
 
-        <button onclick="hesaplaOEE()">Hesapla</button>
+                <label for="kaliteliUrun">Kaliteli Ürün Miktarı:</label>
+                <input type="number" id="kaliteliUrun" min="0" required>
 
-        <div id="sonuc"></div>
+                <button type="submit">Hesapla</button>
+            </form>
+            <div id="sonuc"></div>
+        </div>
+
+        <div class="explanation">
+            <h3>Alan Açıklamaları ve Örnekler</h3>
+            <p><strong>Planlanan Üretim Süresi:</strong> Makinenin üretim için ayrılan toplam süre. <em>Örn: Bir vardiya 480 dakika.</em></p>
+            <p><strong>Duruş Süresi:</strong> Plansız duruşlar nedeniyle üretim yapılamayan toplam süre. <em>Örn: Arıza nedeniyle 30 dakika duruş.</em></p>
+            <p><strong>Toplam Üretilen Miktar:</strong> Makine tarafından üretilen toplam ürün sayısı. <em>Örn: 500 adet ürün üretildi.</em></p>
+            <p><strong>İdeal Çevrim Süresi:</strong> Bir ürünün ideal şartlarda üretilmesi için gereken süre. <em>Örn: Bir ürün için ideal süre 1 dakika.</em></p>
+            <p><strong>Kaliteli Ürün Miktarı:</strong> Üretilen ürünlerden hatasız ve kabul edilebilir olanların sayısı. <em>Örn: Üretilen 500 üründen 450'si kaliteli.</em></p>
+            <p class="green"><strong>Çalışma Süresi:</strong> Planlanan üretim süresinden duruş süresinin çıkarılmasıyla bulunur. <em>Örn: 480 - 30 = 450 dakika.</em></p>
+            <p class="green"><strong>Kullanılabilirlik:</strong> Çalışma süresinin planlanan üretim süresine oranı. <em>Örn: 450 / 480 = 0.9375 (%93.75).</em></p>
+            <p class="green"><strong>Performans:</strong> Gerçekleşen üretimin ideal üretim miktarına oranı. <em>Örn: 500 / (450 / 1) = 1.11 (%111).</em></p>
+            <p class="green"><strong>Kalite:</strong> Kaliteli ürün miktarının toplam üretilen miktara oranı. <em>Örn: 450 / 500 = 0.90 (%90).</em></p>
+            <p class="green"><strong>OEE:</strong> Kullanılabilirlik, Performans ve Kalite değerlerinin çarpımı. <em>Örn: 0.9375 × 1.11 × 0.90 = 0.935 (%93.5).</em></p>
+        </div>
     </div>
 
-    <div class="explanation">
-        <h3>Alan Açıklamaları ve Örnekler</h3>
-        <p><strong>Planlanan Üretim Süresi:</strong> Makinenin üretim için ayrılan toplam süre. <em>Örn: Bir vardiya 480 dakika.</em></p>
-        <p><strong>Duruş Süresi:</strong> Plansız duruşlar nedeniyle üretim yapılamayan toplam süre. <em>Örn: Arıza nedeniyle 30 dakika duruş.</em></p>
-        <p><strong>Toplam Üretilen Miktar:</strong> Makine tarafından üretilen toplam ürün sayısı. <em>Örn: 500 adet ürün üretildi.</em></p>
-        <p><strong>İdeal Çevrim Süresi:</strong> Bir ürünün ideal şartlarda üretilmesi için gereken süre. <em>Örn: Bir ürün için ideal süre 1 dakika.</em></p>
-        <p><strong>Kaliteli Ürün Miktarı:</strong> Üretilen ürünlerden hatasız ve kabul edilebilir olanların sayısı. <em>Örn: Üretilen 500 üründen 450'si kaliteli.</em></p>
-        <p style="color: #4caf50;"><strong>Çalışma Süresi:</strong> Planlanan üretim süresinden duruş süresinin çıkarılmasıyla bulunur. <em>Örn: 480 - 30 = 450 dakika.</em></p>
-        <p style="color: #4caf50;"><strong>Kullanılabilirlik:</strong> Çalışma süresinin planlanan üretim süresine oranıdır. <em>Örn: 450 / 480 = 0.9375 (%93.75).</em></p>
-        <p style="color: #4caf50;"><strong>Performans:</strong> Gerçekleşen üretimin ideal üretim miktarına oranıdır. <em>Örn: 500 / (450 / 1) = 1.11 (%111 - İdealden hızlı çalışılmış).</em></p>
-        <p style="color: #4caf50;"><strong>Kalite:</strong> Kaliteli ürün miktarının toplam üretilen miktara oranıdır. <em>Örn: 450 / 500 = 0.90 (%90).</em></p>
-        <p style="color: #4caf50;"><strong>OEE:</strong> Kullanılabilirlik, Performans ve Kalite değerlerinin çarpımıdır. <em>Örn: 0.9375 * 1.11 * 0.90 = 0.935 (%93.5).</em></p>
-    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Makine OEE Hesaplama. Tüm hakları saklıdır. | <a href="#">Gizlilik Politikası</a> | <a href="#">İletişim</a></p>
+    </footer>
 
     <script>
         function hesaplaOEE() {
-            const planlananSure = parseFloat(document.getElementById("planlananSure").value);
-            const durusSuresi = parseFloat(document.getElementById("durusSuresi").value);
-            const toplamUretim = parseInt(document.getElementById("toplamUretim").value);
-            const idealCevrim = parseFloat(document.getElementById("idealCevrim").value);
-            const kaliteliUrun = parseInt(document.getElementById("kaliteliUrun").value);
+            const inputs = {
+                planlananSure: parseFloat(document.getElementById("planlananSure").value),
+                durusSuresi: parseFloat(document.getElementById("durusSuresi").value),
+                toplamUretim: parseInt(document.getElementById("toplamUretim").value),
+                idealCevrim: parseFloat(document.getElementById("idealCevrim").value),
+                kaliteliUrun: parseInt(document.getElementById("kaliteliUrun").value)
+            };
 
-            if (isNaN(planlananSure) || isNaN(durusSuresi) || isNaN(toplamUretim) || isNaN(idealCevrim) || isNaN(kaliteliUrun)) {
-                document.getElementById("sonuc").innerText = "Lütfen tüm alanları geçerli sayılarla doldurun.";
+            const sonucDiv = document.getElementById("sonuc");
+
+            if (Object.values(inputs).some(isNaN)) {
+                sonucDiv.innerHTML = '<span style="color: #d32f2f;">Lütfen tüm alanları geçerli sayılarla doldurun.</span>';
                 return;
             }
 
-            const calismaSuresi = planlananSure - durusSuresi;
-            const idealUretimMiktari = calismaSuresi / idealCevrim;
+            if (inputs.idealCevrim <= 0) {
+                sonucDiv.innerHTML = '<span style="color: #d32f2f;">İdeal çevrim süresi sıfırdan büyük olmalıdır.</span>';
+                return;
+            }
 
-            const kullanilabilirlik = calismaSuresi / planlananSure;
-            const performans = toplamUretim / idealUretimMiktari;
-            const kalite = kaliteliUrun / toplamUretim;
+            const calismaSuresi = inputs.planlananSure - inputs.durusSuresi;
+            const idealUretimMiktari = calismaSuresi / inputs.idealCevrim;
+            const kullanilabilirlik = calismaSuresi / inputs.planlananSure;
+            const performans = inputs.toplamUretim / idealUretimMiktari;
+            const kalite = inputs.kaliteliUrun / inputs.toplamUretim;
             const oee = kullanilabilirlik * performans * kalite;
 
-            document.getElementById("sonuc").innerHTML = `
-                Çalışma Süresi: <span style="color: #4caf50;">${calismaSuresi.toFixed(2)}</span> dakika<br>
-                Kullanılabilirlik: <span style="color: #4caf50;">${(kullanilabilirlik * 100).toFixed(2)}</span>%<br>
-                Performans: <span style="color: #4caf50;">${(performans * 100).toFixed(2)}</span>%<br>
-                Kalite: <span style="color: #4caf50;">${(kalite * 100).toFixed(2)}</span>%<br>
-                OEE: <span style="color: #4caf50;">${(oee * 100).toFixed(2)}</span>%
+            sonucDiv.innerHTML = `
+                <strong>Çalışma Süresi:</strong> ${calismaSuresi.toFixed(2)} dakika<br>
+                <strong>Kullanılabilirlik:</strong> ${(kullanilabilirlik * 100).toFixed(2)}%<br>
+                <strong>Performans:</strong> ${(performans * 100).toFixed(2)}%<br>
+                <strong>Kalite:</strong> ${(kalite * 100).toFixed(2)}%<br>
+                <strong>OEE:</strong> ${(oee * 100).toFixed(2)}%
             `;
         }
     </script>
