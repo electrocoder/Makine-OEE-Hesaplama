@@ -5,17 +5,27 @@
     <style>
         body {
             font-family: sans-serif;
+            display: flex;
         }
         .container {
             width: 400px;
-            margin: 20px auto;
+            margin: 20px;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+        .explanation {
+            width: 300px;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
         label {
             display: block;
             margin-bottom: 5px;
+            color: #333; /* Genel etiket rengi */
         }
         input[type="number"] {
             width: 100%;
@@ -24,6 +34,7 @@
             border: 1px solid #ddd;
             border-radius: 3px;
             box-sizing: border-box;
+            background-color: #e0f7fa; /* Giriş alanı rengi (açık mavi) */
         }
         button {
             padding: 10px 15px;
@@ -36,6 +47,10 @@
         #sonuc {
             margin-top: 20px;
             font-weight: bold;
+            color: #4caf50; /* Hesaplanan sonuç rengi (yeşil) */
+        }
+        h3 {
+            margin-top: 0;
         }
     </style>
 </head>
@@ -62,6 +77,20 @@
         <div id="sonuc"></div>
     </div>
 
+    <div class="explanation">
+        <h3>Alan Açıklamaları ve Örnekler</h3>
+        <p><strong>Planlanan Üretim Süresi:</strong> Makinenin üretim için ayrılan toplam süre. <em>Örn: Bir vardiya 480 dakika.</em></p>
+        <p><strong>Duruş Süresi:</strong> Plansız duruşlar nedeniyle üretim yapılamayan toplam süre. <em>Örn: Arıza nedeniyle 30 dakika duruş.</em></p>
+        <p><strong>Toplam Üretilen Miktar:</strong> Makine tarafından üretilen toplam ürün sayısı. <em>Örn: 500 adet ürün üretildi.</em></p>
+        <p><strong>İdeal Çevrim Süresi:</strong> Bir ürünün ideal şartlarda üretilmesi için gereken süre. <em>Örn: Bir ürün için ideal süre 1 dakika.</em></p>
+        <p><strong>Kaliteli Ürün Miktarı:</strong> Üretilen ürünlerden hatasız ve kabul edilebilir olanların sayısı. <em>Örn: Üretilen 500 üründen 450'si kaliteli.</em></p>
+        <p style="color: #4caf50;"><strong>Çalışma Süresi:</strong> Planlanan üretim süresinden duruş süresinin çıkarılmasıyla bulunur. <em>Örn: 480 - 30 = 450 dakika.</em></p>
+        <p style="color: #4caf50;"><strong>Kullanılabilirlik:</strong> Çalışma süresinin planlanan üretim süresine oranıdır. <em>Örn: 450 / 480 = 0.9375 (%93.75).</em></p>
+        <p style="color: #4caf50;"><strong>Performans:</strong> Gerçekleşen üretimin ideal üretim miktarına oranıdır. <em>Örn: 500 / (450 / 1) = 1.11 (%111 - İdealden hızlı çalışılmış).</em></p>
+        <p style="color: #4caf50;"><strong>Kalite:</strong> Kaliteli ürün miktarının toplam üretilen miktara oranıdır. <em>Örn: 450 / 500 = 0.90 (%90).</em></p>
+        <p style="color: #4caf50;"><strong>OEE:</strong> Kullanılabilirlik, Performans ve Kalite değerlerinin çarpımıdır. <em>Örn: 0.9375 * 1.11 * 0.90 = 0.935 (%93.5).</em></p>
+    </div>
+
     <script>
         function hesaplaOEE() {
             const planlananSure = parseFloat(document.getElementById("planlananSure").value);
@@ -83,12 +112,12 @@
             const kalite = kaliteliUrun / toplamUretim;
             const oee = kullanilabilirlik * performans * kalite;
 
-            document.getElementById("sonuc").innerText = `
-                Çalışma Süresi: ${calismaSuresi.toFixed(2)} dakika
-                \nKullanılabilirlik: ${(kullanilabilirlik * 100).toFixed(2)}%
-                \nPerformans: ${(performans * 100).toFixed(2)}%
-                \nKalite: ${(kalite * 100).toFixed(2)}%
-                \nOEE: ${(oee * 100).toFixed(2)}%
+            document.getElementById("sonuc").innerHTML = `
+                Çalışma Süresi: <span style="color: #4caf50;">${calismaSuresi.toFixed(2)}</span> dakika<br>
+                Kullanılabilirlik: <span style="color: #4caf50;">${(kullanilabilirlik * 100).toFixed(2)}</span>%<br>
+                Performans: <span style="color: #4caf50;">${(performans * 100).toFixed(2)}</span>%<br>
+                Kalite: <span style="color: #4caf50;">${(kalite * 100).toFixed(2)}</span>%<br>
+                OEE: <span style="color: #4caf50;">${(oee * 100).toFixed(2)}</span>%
             `;
         }
     </script>
