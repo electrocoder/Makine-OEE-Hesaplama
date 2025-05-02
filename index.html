@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Makine OEE Hesaplama</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .container {
+            width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        #sonuc {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Makine OEE Hesaplama</h2>
+        <label for="planlananSure">Planlanan Üretim Süresi (dakika):</label>
+        <input type="number" id="planlananSure" required>
+
+        <label for="durusSuresi">Duruş Süresi (dakika):</label>
+        <input type="number" id="durusSuresi" required>
+
+        <label for="toplamUretim">Toplam Üretilen Miktar:</label>
+        <input type="number" id="toplamUretim" required>
+
+        <label for="idealCevrim">İdeal Çevrim Süresi (dakika/ürün):</label>
+        <input type="number" id="idealCevrim" step="0.01" required>
+
+        <label for="kaliteliUrun">Kaliteli Ürün Miktarı:</label>
+        <input type="number" id="kaliteliUrun" required>
+
+        <button onclick="hesaplaOEE()">Hesapla</button>
+
+        <div id="sonuc"></div>
+    </div>
+
+    <script>
+        function hesaplaOEE() {
+            const planlananSure = parseFloat(document.getElementById("planlananSure").value);
+            const durusSuresi = parseFloat(document.getElementById("durusSuresi").value);
+            const toplamUretim = parseInt(document.getElementById("toplamUretim").value);
+            const idealCevrim = parseFloat(document.getElementById("idealCevrim").value);
+            const kaliteliUrun = parseInt(document.getElementById("kaliteliUrun").value);
+
+            if (isNaN(planlananSure) || isNaN(durusSuresi) || isNaN(toplamUretim) || isNaN(idealCevrim) || isNaN(kaliteliUrun)) {
+                document.getElementById("sonuc").innerText = "Lütfen tüm alanları geçerli sayılarla doldurun.";
+                return;
+            }
+
+            const calismaSuresi = planlananSure - durusSuresi;
+            const idealUretimMiktari = calismaSuresi / idealCevrim;
+
+            const kullanilabilirlik = calismaSuresi / planlananSure;
+            const performans = toplamUretim / idealUretimMiktari;
+            const kalite = kaliteliUrun / toplamUretim;
+            const oee = kullanilabilirlik * performans * kalite;
+
+            document.getElementById("sonuc").innerText = `
+                Çalışma Süresi: ${calismaSuresi.toFixed(2)} dakika
+                \nKullanılabilirlik: ${(kullanilabilirlik * 100).toFixed(2)}%
+                \nPerformans: ${(performans * 100).toFixed(2)}%
+                \nKalite: ${(kalite * 100).toFixed(2)}%
+                \nOEE: ${(oee * 100).toFixed(2)}%
+            `;
+        }
+    </script>
+</body>
+</html>
